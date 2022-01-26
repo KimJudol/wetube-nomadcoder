@@ -6,7 +6,7 @@
     "url": "git+https://github.com/JK-cs/wetube-reloaded.git"
   },
   "scripts": {
-    "dev": "nodemon --exec npx babel-node src/server.js"
+    "dev": "nodemon --exec npx babel-node src/init.js"
   },
   "license": "ISC",
   "bugs": {
