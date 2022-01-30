@@ -1,33 +1,46 @@
+import res from "express/lib/response";
 import Video from "../models/Video";
 
-const handleSearch = (error, videos) => {
-    return res.render("home", {pageTitle: "Home", videos});
+export const home = async (req, res) => {
+    const videos = await Video.find({});
+    console.log(videos);
+    return res.render("home", { pageTitle: "Home", videos });
 };
-
-export const home = (req, res) => {
-    Video.find({}, handleSearch);
-}
 
 export const watch = (req, res) => {
     const { id } = req.params;
-    return  res.render("watch", {pageTitle: `Watching`});
-}
+    return res.render("watch", { pageTitle: `Watching` });
+};
+
 export const getEdit = (req, res) => {
     const { id } = req.params;
-    return res.render ("Edit", {pageTitle: `Editing`});
-}
+    return res.render("Edit", { pageTitle: `Editing` });
+};
 
 export const postEdit = (req, res) => {
     const { id } = req.params;
-    const {title} = req.body;
+    const { title } = req.body;
     return res.redirect(`/videos/${id}`);
-}
+};
 
-export const getUpload = (req, res) => {
-    return res.render("upload", {pageTitle: "Upload Video"});
-}
+export const getUpload = async (req, res) => {
+    return res.render("upload", { pageTitle: "Upload Video" });
+};
 
-export const postUpload = (req, res) =>{
-    const {title} = req.body;
-    return res.redirect("/");
-}
+export const postUpload = async (req, res) => {
+    const { title, description, hashtags } = req.body;
+    try {
+        await Video.create({
+            title,
+            description,
+            hashtags: hashtags.split(",").map((word) => `#${word}`),
+        });
+        return res.redirect("/");
+    } catch (error) {
+        return res.render("upload", {
+            pageTitle: "Upload Video",
+            errorMessage: error._message,
+        });
+    }
+
+};  
